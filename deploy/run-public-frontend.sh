@@ -3,11 +3,14 @@ set -e
 
 IMAGE_NAME="my-diary-frontend"
 CONTAINER_NAME="my-diary-frontend"
-BACKEND_HOST="10.10.2.6"
+
+# Private 서버의 사설 IP 주소로 Backend 호스트 설정
+BACKEND_HOST="${BACKEND_HOST:-10.10.2.6}"
 
 cd "$(dirname "$0")/.."
 
 # 기존 컨테이너 중지 및 제거
+# 환경변수 데이터 접근방법: $환경변수명
 docker stop "$CONTAINER_NAME" 2>/dev/null || true
 docker rm "$CONTAINER_NAME" 2>/dev/null || true
 
@@ -21,6 +24,7 @@ docker build \
 docker run -d \
   --name "$CONTAINER_NAME" \
   -p 80:80 \
+  -e BACKEND_HOST="$BACKEND_HOST" \
   --restart unless-stopped \
   "$IMAGE_NAME"
 
